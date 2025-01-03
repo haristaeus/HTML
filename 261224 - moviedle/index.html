@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Games</title>
+        <link rel="stylesheet" href="./styles.css">
+        <script src="script.js"></script>
+        <script src="https://kit.fontawesome.com/4e96d10eec.js" crossorigin="anonymous"></script>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <!-- Navbar with logo, tabs and tool icons -->
+        <navbar id="nav">
+            <span id="logo">
+                <a>Games</a>
+            </span>
+            <div id="tablinks">
+                <ul id="nav-list tabs-wrap">
+                    <li class="tab" id="home">Home</li>
+                    <li class="tab" id="games">Games</li>
+                </ul>
+            </div>
+            <div id="toollinks">
+                <ul id="nav-list tools-wrap">
+                    <li class="tool" id="faq"><i class="fa-solid fa-circle-question"></i></li>
+                    <li class="tool" id="help"><i class="fa-solid fa-circle-info"></i></li>
+                    <li class="tool" id="leaderboard"><i class="fa-solid fa-ranking-star"></i></li>
+                </ul>
+            </div>
+        </navbar>
+        <!-- Main page part, with question segment, adspace, a guessing portion
+                        and an info page if you scroll down -->
+        <div class="main">
+            <div class="question-wrap">
+                <div class="adspace"></div>
+                <img src="./images/movie-posters/pearl.jpg" id="answer-image" width="300px" height="400px">
+                <div id="canvas-wrap">
+                    <canvas class="question-image" id="answer-canvas" width="400px" height="500px"></canvas>
+                </div>
+                <div class="adspace"></div>
+            </div>
+            <div class="guess-wrap">
+                <input id="guess-search" onkeyup="filterList()" type="text" placeholder="Your Guess"></input>
+                <button id="guess-button" onclick="checkAnswer()">Guess!</button>
+                <div class="hide" id="movie-list-wrap">
+                    <ul class="list" id="movie-list">
+                        <li class="movie-name" value="Movie 1"><a onclick="fillGuess(this)">Movie 1</a></li>
+                        <li class="movie-name" value="Movie 1"><a onclick="fillGuess(this)">kjsahflkjhdsf</a></li>
+                        <li class="movie-name" value="Movie 1"><a onclick="fillGuess(this)">hlkeihfwhoenhf wfnsds</a></li>
+                        <li class="movie-name" value="Movie 1"><a onclick="fillGuess(this)">Mkjeh lkshldjsf 1</a></li>
+                        <li class="movie-name" value="Movie 1"><a onclick="fillGuess(this)">Molkua hg 676797</a></li>
+                        <li class="movie-name" value="Movie 1"><a onclick="fillGuess(this)">hhaoaoaoipoijj1</a></li>
+                    </ul>
+                </div>
+            </div>
+            <button onclick="changeBlur(-5)">blur -5</button>
+            <button onclick="changeBlur(5)">blur +5</button>
+            <p id="blurval">Blur Value: </p>
+        </div>
+    </body>
+</html>

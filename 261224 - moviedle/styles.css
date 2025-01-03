@@ -1,0 +1,37 @@
+* {
+    background-color: #020202;
+    color: #ddd;
+}
+
+#answer-image {
+    display: none;
+}
+
+#nav {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 3px solid #080808;
+    padding: 0px 5%;
+}
+
+
+
+ul {
+    list-style: none;
+}
+
+
+
+#guess-search {
+    margin: auto;
+}
+
+.movie-name {
+    border: 1px solid #080808;
+    padding: 4px 0px;
+    text-align: center;
+}
+
+.movie-name a {
+    cursor: pointer;
+}
