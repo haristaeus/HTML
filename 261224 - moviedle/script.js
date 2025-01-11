@@ -1,15 +1,52 @@
-var blurval = 20;
+var blurval = 30;
+var guesses = 6;
+let movieMatrix = {};
+let randomPosterId = '';
+
+const input = document.getElementById("guess-search");
+
+const apiKey = '20b59b2081de1e857cfa452c714a06a4';
+const moviesContainer = document.getElementById("movies-list");
+
+
+async function fetchMovies() {
+  try {
+    for (let i=1; i<=2; i++) {  
+      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?page=${i}&api_key=${apiKey}&language='en'`);
+      const data = await response.json();
+    
+      data.results.forEach(media => {
+      movieMatrix[media.poster_path] = media.title;
+      const movieCard = createMovieCard(media);
+      moviesContainer.appendChild(movieCard);
+      });
+    }  
+    
+    const posterIds = Object.keys(movieMatrix);
+    randomPosterId = posterIds[Math.floor(Math.random() * posterIds.length)];
+    drawCanvas(randomPosterId);
+
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
+
+function createMovieCard(media) {
+  const { title, poster_path } = media;
+
+  const movieCard = document.createElement("li");
+  movieCard.innerHTML = `<a onclick="fillGuess(this)">${title}</a>`;
+  return movieCard;
+}
 
 function fillGuess(a) { 
     document.getElementById("guess-search").value = a.innerText; 
 }
 
 function filterList() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("guess-search");
+    var filter, li, a, i;
     filter = input.value.toUpperCase();
-    ul = document.getElementById("movie-list");
-    li = ul.getElementsByTagName("li");
+    li = moviesContainer.getElementsByTagName("li");
     for (i = 0; i < li.length; i++) {
       a = li[i].getElementsByTagName("a")[0];
       if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
@@ -20,40 +57,70 @@ function filterList() {
     }
   }
 
-function changeBlur(d) {
-    var blurvalp = document.getElementById("blurval")
-    blurval += d;
-    blurvalp.innerText = 'Blur Value: ' + blurval;
-    drawCanvas();
-}
+  function checkAnswer() {
+    const answer = movieMatrix[randomPosterId];
+    const guessDisp = document.getElementById("guess-display");
+    const userGuess = input.value.trim();
+    const resultDisp = document.getElementById("result-display");
+    const guessBtn = document.getElementById("guess-button");
 
-function drawCanvas() {
+    if (userGuess === "") {
+      alert("Please enter a guess!");
+      return;
+    }
+
+    if (userGuess.toLowerCase() === answer.toLowerCase()) {
+      input.disabled = true;
+      resultDisp.innerText = 'Correct! Click to play again.';
+      changeBlur(0);
+      guessBtn.onclick = function() {reloadGame()};
+      guessBtn.innerText = "Reload";
+    } else {
+      guesses--;
+      input.value = "";
+      filterList();
+      changeBlur(guesses);
+      if (guesses <= 0) {
+        resultDisp.innerText = 'Incorrect! Click to play again.';
+        guessBtn.onclick = function() {reloadGame()};
+        guessBtn.innerText = "Reload";
+      }
+    }
+  }
+
+  function changeBlur(d) {
+    blurval = d * 5;
+    console.log("changeblur");
+    drawCanvas(randomPosterId);
+  }
+  
+  function drawCanvas(randomPosterId) {
     var c = document.getElementById("answer-canvas");
     var ctx = c.getContext("2d");
-    var img = document.getElementById("answer-image");
-    ctx.clearRect(0, 0, c.width, c.height);
-    c.style.filter = "blur(" + blurval + "px)";
-    ctx.drawImage(img, 0, 0, c.width, c.height);
-    APICALL();
+    var img = new Image();
+
+    img.src = `https://image.tmdb.org/t/p/w500/${randomPosterId}`;
+
+    img.onload = function() {
+      c.width = img.width;
+      c.height = img.height;
+
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.filter = `blur(${blurval}px)`;
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+    };
+    img.onerror = function() {
+      console.error("Failed to load the image.");
+    };
+}  
+
+function reloadGame() {
+  console.log("reload");
+  location.reload();
+  return false;
 }
+  
+window.onload = fetchMovies;
 
-function checkAnswer() {
 
-}
-
-function APICALL() {
-  const options = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyMGI1OWIyMDgxZGUxZTg1N2NmYTQ1MmM3MTRhMDZhNCIsIm5iZiI6MTczNTgxMDk5Ny4xMTMsInN1YiI6IjY3NzY1ZmI1MGYyNDhlODUwODEyZWUxNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E7AFG6BZ7lLOI-pIuUuNmavRbYPMcFwURo68GX4gfRE'
-  }
-  };
-
-  fetch('https://api.themoviedb.org/3/movie/popular?language=en-US', options)
-  .then(res => res.json())
-  .then(res => console.log(res))
-  .catch(err => console.error(err));
-}
-
-window.onload = drawCanvas;
+//        <img src="https://image.tmdb.org/t/p/w500/${poster_path}" class="movie_img_rounded">
