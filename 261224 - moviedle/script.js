@@ -11,8 +11,8 @@ const moviesContainer = document.getElementById("movies-list");
 
 async function fetchMovies() {
   try {
-    for (let i=1; i<=2; i++) {  
-      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?page=${i}&api_key=${apiKey}&language='en'`);
+    for (let i=1; i<=20; i++) {  
+      const response = await fetch(`https://api.themoviedb.org/3/discover/movie?page=${i}&api_key=${apiKey}&language=en-US&sort_by=popularity.desc&vote_count.gte=560&with_original_language=en`);
       const data = await response.json();
     
       data.results.forEach(media => {
